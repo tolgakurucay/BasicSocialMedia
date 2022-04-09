@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "956601271389",
+    "project_id": "basicsocialmedia-b6604",
+    "storage_bucket": "basicsocialmedia-b6604.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:956601271389:android:99edbe7cc39761f72379b4",
+        "android_client_info": {
+          "package_name": "com.tolgakurucay.basicsocialmedia"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "956601271389-55s4ao37at9vpkjljahuasnpeiklr8ne.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyASX3vP4AkQ5RSrHEpzDgBn1pShX5dYkk0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "956601271389-55s4ao37at9vpkjljahuasnpeiklr8ne.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
