@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoginActivity">
+    tools:context=".myProject.view.LoginActivity">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
@@ -23,21 +23,32 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginBottom="24dp"
 
             android:orientation="vertical">
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
+                android:id="@+id/inputLayoutEmail"
+                app:endIconMode="clear_text"
+                app:helperTextEnabled="true"
+                app:helperTextTextColor="@android:color/holo_red_dark"
+                app:helperText="Zorunlu*"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="16dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_height="match_parent">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/textEmail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="18dp"
+                    android:layout_marginTop="24dp"
                     android:background="#FFFFFF"
+
                     android:drawableStart="@drawable/ic_baseline_email"
                     android:drawablePadding="12dp"
-                    android:hint="E-Mail"
+                    android:hint="E-Posta"
                     android:saveEnabled="true"
                     android:soundEffectsEnabled="false"
                     android:textStyle="normal" />
@@ -47,18 +58,24 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                app:helperTextEnabled="true"
+                app:helperTextTextColor="@android:color/holo_red_dark"
+                android:id="@+id/inputLayoutPassword"
+                app:helperText="Zorunlu*"
+                app:errorIconDrawable="@drawable/ic_baseline_error_24"
                 app:passwordToggleEnabled="true">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/textPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
-                    android:layout_marginBottom="24dp"
+
                     android:background="#FFFFFF"
                     android:drawableStart="@drawable/ic_baseline_lock_24"
                     android:drawablePadding="12dp"
-                    android:hint="Password"
+                    android:hint="Şifre"
                     android:inputType="textPassword"
                     android:password="true"
                     android:saveEnabled="true" />
@@ -69,14 +86,14 @@
     </androidx.cardview.widget.CardView>
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/button4"
+        android:id="@+id/btnKayitOl"
         android:layout_width="225dp"
         android:layout_height="wrap_content"
         android:autoText="true"
 
         android:background="@drawable/button_gradient_color"
         android:backgroundTintMode="add"
-        android:text="Button"
+        android:text="Giriş Yap"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="@+id/cardView"
         app:layout_constraintEnd_toEndOf="@+id/cardView"
@@ -86,7 +103,7 @@
     <View
         android:id="@+id/view"
         android:layout_width="210dp"
-        android:layout_height="500dp"
+        android:layout_height="600dp"
         android:layout_weight="1"
         android:background="@drawable/rectangle"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -98,11 +115,25 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:background="@drawable/button_register"
-        android:text="Register"
+        android:background="@drawable/button_signin"
+        android:text="ÜYE OL"
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="@+id/view"
         app:layout_constraintStart_toStartOf="@+id/view"
+        app:layout_constraintTop_toTopOf="@+id/view" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="GİRİŞ YAP"
+        android:textColor="#FF8F00"
+        android:textColorHighlight="#EF6C00"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/view"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/view" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

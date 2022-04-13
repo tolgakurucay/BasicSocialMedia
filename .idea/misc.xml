@@ -5,13 +5,18 @@
       <map>
         <entry key="..\:/Users/Tolga/AndroidStudioProjects/BasicSocialMedia/app/src/main/res/drawable/button_gradient_color.xml" value="0.3675" />
         <entry key="..\:/Users/Tolga/AndroidStudioProjects/BasicSocialMedia/app/src/main/res/drawable/button_register.xml" value="0.107" />
+        <entry key="..\:/Users/Tolga/AndroidStudioProjects/BasicSocialMedia/app/src/main/res/drawable/button_signin.xml" value="0.3675" />
         <entry key="..\:/Users/Tolga/AndroidStudioProjects/BasicSocialMedia/app/src/main/res/drawable/login_gradient_color.xml" value="0.1" />
         <entry key="..\:/Users/Tolga/AndroidStudioProjects/BasicSocialMedia/app/src/main/res/drawable/login_panel_gradient.xml" value="0.103" />
+        <entry key="..\:/Users/Tolga/AndroidStudioProjects/BasicSocialMedia/app/src/main/res/drawable/register_gradient.xml" value="0.3675" />
         <entry key="..\:/Users/Tolga/AndroidStudioProjects/BasicSocialMedia/app/src/main/res/layout/activity_feed.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Tolga/AndroidStudioProjects/BasicSocialMedia/app/src/main/res/layout/activity_login.xml" value="0.33" />
         <entry key="..\:/Users/Tolga/AndroidStudioProjects/BasicSocialMedia/app/src/main/res/layout/activity_main.xml" value="0.33" />
+        <entry key="..\:/Users/Tolga/AndroidStudioProjects/BasicSocialMedia/app/src/main/res/layout/activity_phone_auth.xml" value="0.33" />
         <entry key="..\:/Users/Tolga/AndroidStudioProjects/BasicSocialMedia/app/src/main/res/layout/activity_reg.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Tolga/AndroidStudioProjects/BasicSocialMedia/app/src/main/res/layout/activity_register.xml" value="0.33" />
+        <entry key="..\:/Users/Tolga/AndroidStudioProjects/BasicSocialMedia/app/src/main/res/layout/fragment_create_user.xml" value="0.33" />
+        <entry key="..\:/Users/Tolga/AndroidStudioProjects/BasicSocialMedia/app/src/main/res/layout/fragment_feed.xml" value="0.35260416666666666" />
       </map>
     </option>
   </component>
