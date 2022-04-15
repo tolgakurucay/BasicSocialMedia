@@ -13,19 +13,34 @@ import com.tolgakurucay.basicsocialmedia.databinding.ActivityLoginBinding
 import kotlinx.android.synthetic.main.activity_login.*
 
 import android.view.View
+import com.google.firebase.auth.FirebaseAuth
+import com.tolgakurucay.basicsocialmedia.util.Variables
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding:ActivityLoginBinding
 
     private lateinit var firestore: FirebaseFirestore
+    private lateinit var auth:FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
         binding= ActivityLoginBinding.inflate(layoutInflater)
         val view=binding.root
 
         setContentView(view)
         firestore= FirebaseFirestore.getInstance()
-       binding.btnKayitOl.visibility=View.INVISIBLE
+        auth= FirebaseAuth.getInstance()
+        auth.useAppLanguage()
+
+       auth.currentUser?.let {
+           val intent=Intent(this,FeedActivity::class.java)
+           Variables.oldAccount=true
+           startActivity(intent)
+       }
+
+
+       //binding.btnKayitOl.visibility=View.INVISIBLE
 
 
         buttonLogin.setOnClickListener {
@@ -46,15 +61,29 @@ class LoginActivity : AppCompatActivity() {
 
         if(validateMailAndPassword()==true){
 
-            Toast.makeText(this@LoginActivity,"Giriş Yapıldı",Toast.LENGTH_SHORT).show()
+            firestore= FirebaseFirestore.getInstance()
+            firestore.collection("users")
+                .whereEqualTo("email",binding.textEmail.text.toString())
+                .whereEqualTo("password",binding.textPassword.text.toString())
+                .get()
+                .addOnSuccessListener {
+                    if(!it.isEmpty){
+                        Toast.makeText(this,"Giriş Yapıldı",Toast.LENGTH_SHORT).show()
+                        val intent=Intent(this,FeedActivity::class.java)
+                       Variables.oldAccount=true
+                        startActivity(intent)
+                    }
+                    else
+                    {
+                        Toast.makeText(this,"E-Mail ve Şifre Uyuşmuyor",Toast.LENGTH_SHORT).show()
+                    }
+                }
 
 
 
 
             //firebase doğrulamasından sonra
-            val intent=Intent(this,FeedActivity::class.java)
-            intent.putExtra("from","oldAccount")
-            startActivity(intent)
+
 
         }
 

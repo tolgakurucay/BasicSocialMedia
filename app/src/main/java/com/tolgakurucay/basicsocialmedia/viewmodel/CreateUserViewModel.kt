@@ -5,47 +5,34 @@ import android.graphics.Bitmap
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
+import com.tolgakurucay.basicsocialmedia.model.NewUserModel
+import com.tolgakurucay.basicsocialmedia.util.Variables
 
 
 class CreateUserViewModel:ViewModel(){
 
-    var nameMutable = MutableLiveData<String>()
-
-    var surnameMutable = MutableLiveData<String>()
-
-    var imageBitmapMutable = MutableLiveData<Bitmap>()
+    val bool=MutableLiveData<Boolean>()
 
 
-    fun saveDataToFirebase(name:String?,surname:String?,imageString: String?,phoneNumber:String?,email:String?) : Boolean{
-         var boolean=true
-        val firestore=FirebaseFirestore.getInstance()
-        val user= hashMapOf(
-            "name" to name,
-            "surname" to surname,
-            "phone" to phoneNumber,
-            "email" to email,
-            "imageString" to imageString
-        )
-        firestore.collection(name+"_"+surname).add(user).addOnCompleteListener {
-            boolean=true
-            println("completeList")
+    fun saveDataToFirebase(user:NewUserModel){
 
+        var firebase=FirebaseFirestore.getInstance()
+        firebase.collection("users").add(user)
+            .addOnCompleteListener {
+            bool.value = true
         }
             .addOnFailureListener {
+                bool.value = false
                 println(it.localizedMessage)
-                boolean=true
-                println("failList")
             }
-            .addOnSuccessListener {
-                boolean=true
-                println("successList")
-            }
-        println(boolean)
-        return boolean
+
 
 
 
     }
+
+
 
     fun validateName(name:String) : String?{
         if(name==""){

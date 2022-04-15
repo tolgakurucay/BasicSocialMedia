@@ -1,6 +1,10 @@
 package com.tolgakurucay.basicsocialmedia.myProject.view
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
+import com.tolgakurucay.basicsocialmedia.R
 import com.tolgakurucay.basicsocialmedia.databinding.ActivityFeedBinding
 class FeedActivity : AppCompatActivity() {
 
@@ -15,24 +19,30 @@ class FeedActivity : AppCompatActivity() {
         binding= ActivityFeedBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        var from=intent.getStringExtra("from")
 
 
 
 
-        if(from=="newAccount"){
-            println("Yeni Hesap")
 
 
 
+
+
+
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater=menuInflater
+        inflater.inflate(R.menu.feed_menu,menu)
+        return super.onCreateOptionsMenu(menu)
+
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if(item.itemId==R.id.logout){
+            val intent=Intent(this,LoginActivity::class.java)
+            startActivity(intent)
         }
-        else if(from=="oldAccount")
-        {
-            println("Eski Hesap")
-        }
-
-
-
-
+        return super.onOptionsItemSelected(item)
     }
 }

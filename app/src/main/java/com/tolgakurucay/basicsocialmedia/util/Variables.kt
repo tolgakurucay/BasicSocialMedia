@@ -11,4 +11,6 @@ object Variables {
     var vemail:String?=null
     var vimagestring:String?=null
     var vpassword:String?=null
+    var vimageUri:Uri?=null
+    var oldAccount:Boolean?=null
 }

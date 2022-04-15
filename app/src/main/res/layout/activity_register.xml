@@ -78,8 +78,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:endIconMode="clear_text"
-                    app:errorEnabled="true"
-                    app:errorTextColor="@android:color/holo_red_dark">
+                    >
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/editTextPhoneNumber"
@@ -109,8 +108,8 @@
                 android:layout_height="85dp"
                 app:endIconMode="clear_text"
 
-                app:errorEnabled="true"
-                app:errorTextColor="@android:color/holo_red_dark">
+
+                >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editTextEposta"
@@ -136,8 +135,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="32dp"
-                app:errorEnabled="true"
-                app:errorTextColor="@android:color/holo_red_dark"
+
                 app:passwordToggleEnabled="true">
 
 

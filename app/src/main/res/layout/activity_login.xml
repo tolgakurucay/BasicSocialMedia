@@ -51,6 +51,7 @@
                     android:hint="E-Posta"
                     android:saveEnabled="true"
                     android:soundEffectsEnabled="false"
+                    android:text="tolgakurucay1446@gmail.com"
                     android:textStyle="normal" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -78,7 +79,8 @@
                     android:hint="Şifre"
                     android:inputType="textPassword"
                     android:password="true"
-                    android:saveEnabled="true" />
+                    android:saveEnabled="true"
+                    android:text="Tolga.=347" />
 
             </com.google.android.material.textfield.TextInputLayout>
 

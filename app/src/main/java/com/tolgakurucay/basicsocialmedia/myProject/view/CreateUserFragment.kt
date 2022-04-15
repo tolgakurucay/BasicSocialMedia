@@ -15,9 +15,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import com.tolgakurucay.basicsocialmedia.R
 import com.tolgakurucay.basicsocialmedia.databinding.FragmentCreateUserBinding
+import com.tolgakurucay.basicsocialmedia.model.NewUserModel
 import com.tolgakurucay.basicsocialmedia.util.Variables
 import com.tolgakurucay.basicsocialmedia.viewmodel.CreateUserViewModel
 
@@ -34,17 +38,28 @@ class CreateUserFragment : Fragment() {
 
 
 
+
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        val view= inflater.inflate(R.layout.fragment_create_user, container, false)
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_create_user, container, false)
+
+        return view
+
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        if(Variables.oldAccount==true){
+            val action=CreateUserFragmentDirections.actionCreateUserFragmentToFeedFragment()
+            Navigation.findNavController(view).navigate(action)
+        }
+
+
         binding=FragmentCreateUserBinding.bind(view)
         binding.textViewEmail.setText(Variables.vemail)
         binding.textViewPassword.setText(Variables.vpassword)
@@ -63,18 +78,24 @@ class CreateUserFragment : Fragment() {
 
         binding.buttonSave.setOnClickListener {
             if(viewModel.validateNameAndSurname(binding.editTextName.text.toString(),binding.editTextSurname.text.toString())){
+                showProgressBar()
+                hideAll()
                 Variables.vimagestring=selectedImageString
+                Variables.vimageUri=selectedImage
                 Variables.vname=binding.editTextName.text.toString()
                 Variables.vsurname=binding.editTextSurname.text.toString()
-                val isSaved=viewModel.saveDataToFirebase(Variables.vname,Variables.vsurname,Variables.vimagestring,Variables.vphoneNumber,Variables.vemail)
-                if(isSaved){
-                    Toast.makeText(it.context,"Veriler Kaydedildi",Toast.LENGTH_SHORT).show()
+
+                val user=NewUserModel(binding.editTextName.text.toString(),binding.editTextSurname.text.toString(),Variables.vphoneNumber,Variables.vemail,Variables.vimagestring,Variables.vpassword)
+
+                if(selectedImage!=null){
+                    viewModel.saveDataToFirebase(user)
 
                 }
                 else
                 {
-                    Toast.makeText(it.context,"Veriler Kaydedilemedi!",Toast.LENGTH_SHORT).show()
+                    Toast.makeText(it.context,"Resim Seçiniz",Toast.LENGTH_SHORT).show()
                 }
+
             }
             else{
 
@@ -96,7 +117,7 @@ class CreateUserFragment : Fragment() {
             }
 
 
-
+observeLiveData()
 
 
     }
@@ -138,6 +159,24 @@ class CreateUserFragment : Fragment() {
         binding.textNameContainer.visibility=View.INVISIBLE
         binding.textSurnameContainer.visibility=View.INVISIBLE
 
+    }
+
+
+    private fun observeLiveData(){
+        viewModel.bool.observe(viewLifecycleOwner, Observer {
+            if(it){
+                println("kaydedildi")
+                Toast.makeText(this.context,"Veriler Kaydedildi",Toast.LENGTH_SHORT).show()
+                val action=CreateUserFragmentDirections.actionCreateUserFragmentToFeedFragment()
+                Navigation.findNavController(this@CreateUserFragment.requireView()).navigate(action)
+                hideProgressBar()
+                showAll()
+            }
+            else
+            {
+                println("kaydedilmedi")
+            }
+        })
     }
 
 }

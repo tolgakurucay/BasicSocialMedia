@@ -11,12 +11,16 @@ import android.view.View
 import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.core.widget.doOnTextChanged
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
+import com.hbb20.CountryCodePicker
 import com.tolgakurucay.basicsocialmedia.R
 import com.tolgakurucay.basicsocialmedia.databinding.ActivityRegisterBinding
+import com.tolgakurucay.basicsocialmedia.viewmodel.RegisterViewModel
 import kotlinx.android.synthetic.main.activity_login.buttonLogin
 import kotlinx.android.synthetic.main.activity_phone_auth.*
 import kotlinx.android.synthetic.main.activity_register.*
@@ -29,6 +33,7 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var binding:ActivityRegisterBinding
     private lateinit var storedVerificationId:String
     private lateinit var resendToken:PhoneAuthProvider.ForceResendingToken
+    private lateinit var viewModel:RegisterViewModel
 
 
     var phonNum=""
@@ -36,22 +41,31 @@ class RegisterActivity : AppCompatActivity() {
     var password=""
     var result:Boolean=false
 
+    var isUserCreated:Boolean?=null
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        //viewBinding
         binding= ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        //Initialize ViewModel and firebase auth
+        viewModel=ViewModelProvider(this).get(RegisterViewModel::class.java)
+        auth= FirebaseAuth.getInstance()
+        //
+
         showAll()
         hideProgressBar()
-        auth= FirebaseAuth.getInstance()
+
 
         buttonLogin.setOnClickListener {
             it?.let {
 
                 startActivity(Intent(this, LoginActivity::class.java))
                 onBackPressed()
-                //firebase auth
+
 
 
             }
@@ -61,6 +75,8 @@ class RegisterActivity : AppCompatActivity() {
         mailTextChangeListener()
         passwordChangeListener()
         phoneTextChangeListener()
+
+        observeLiveData()
 
     }
 
@@ -74,61 +90,40 @@ class RegisterActivity : AppCompatActivity() {
     fun register(view: View){
 
 
+            viewModel.validatePhoneMailPassword()
+            if(result==true){
+                hideAll()
+                showProgressBar()
+                phonNum=editTextPhoneNumber.text.toString()
+                email=editTextEposta.text.toString()
+                password=editTextParola.text.toString()
 
 
 
-        if(validateMailPasswordPhone()==true){
-            showProgressBar()
-            hideAll()
-            phonNum=editTextPhoneNumber.text.toString()
-            email=editTextEposta.text.toString()
-            password=editTextParola.text.toString()
-
-            var callbacks=object : PhoneAuthProvider.OnVerificationStateChangedCallbacks(){
-                override fun onVerificationCompleted(p0: PhoneAuthCredential) {
-                    Toast.makeText(this@RegisterActivity,"Doğrulama Başarılı",Toast.LENGTH_SHORT).show()
-                    progressBar2.visibility=View.GONE
-                    showAll()
-                    hideProgressBar()
-
-                }
-
-                override fun onVerificationFailed(p0: FirebaseException) {
-                    progressBar2.visibility=View.GONE
-                    Toast.makeText(this@RegisterActivity,"Giriş Başarısız, Hata:"+p0.localizedMessage,Toast.LENGTH_SHORT).show()
-                    println(p0.localizedMessage)
-                    showAll()
-                    hideProgressBar()
-                }
-
-                override fun onCodeSent(verificationId: String, token: PhoneAuthProvider.ForceResendingToken) {
-                    Toast.makeText(this@RegisterActivity,"Doğrulama Kodu Gönderildi",Toast.LENGTH_SHORT).show()
-                    storedVerificationId=verificationId
-                    resendToken=token
-                    val intent=Intent(this@RegisterActivity,PhoneAuthActivity::class.java)
-                    //gönderilecekler
-                    val phoneWithCountry=countryCodePicker.selectedCountryCodeWithPlus+phonNum
+               viewModel.isDataInFirebase(countryCodePicker.selectedCountryCodeWithPlus+phonNum)
 
 
-                    intent.putExtra("phone",phoneWithCountry)
-                    intent.putExtra("email",email)
-                    intent.putExtra("password",password)
-                    intent.putExtra("storedVerificationId",storedVerificationId)
-                    intent.putExtra("token",resendToken)
-                    startActivity(intent)
 
-                    showAll()
-                    hideProgressBar()
-                }
-
+                //viewModel.sendVerificationCode(countryCodePicker.selectedCountryCodeWithPlus+phonNum,auth,this@RegisterActivity)
             }
 
-            sendVerificationCode(phonNum,callbacks)
-        }
-        else
-        {
-            Toast.makeText(this@RegisterActivity,"Bilgilerinizi Doğruladıktan Sonra Kayıt Olabilirsiniz",Toast.LENGTH_SHORT).show()
-        }
+
+
+
+
+            else
+            {
+                Toast.makeText(this@RegisterActivity,"Bilgilerinizi Doğruladıktan Sonra Kayıt Olabilirsiniz",Toast.LENGTH_SHORT).show()
+            }
+
+
+
+
+
+
+
+
+
 
 
 
@@ -139,80 +134,29 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun mailTextChangeListener(){
         binding.editTextEposta.addTextChangedListener {
-            if(binding.editTextEposta.text.toString()=="")
-            {
-                binding.textInputLayoutEmail.error="Lütfen Bir E-Mail Adresi Giriniz"
-            }
-            else if(Patterns.EMAIL_ADDRESS.matcher(binding.editTextEposta.text.toString()).matches()!=true){
-                binding.textInputLayoutEmail.error="Geçersiz E-Mail"
-            }
-
-            else
-            {
-                binding.textInputLayoutEmail.error=null
-            }
+            viewModel.mailValidation(binding.editTextEposta.text.toString())
         }
 
     }
 
     private fun passwordChangeListener(){
         binding.editTextParola.addTextChangedListener {
-            if(binding.editTextParola.text.toString()==""){
-                binding.textInputLayoutPassword.error="Lütfen Parola Giriniz\nParolada En Az 8 Karakter\nEn Az 1 Büyük Karakter\nEn Az 1 Küçük Karakter\nEn Az 1 Özel Karakter Zorunludur.\n\n"
-            }
-            else if(binding.editTextParola.text.toString().length<8){
-                binding.textInputLayoutPassword.error="En Az 8 Karakter Girilmeli"
-            }
-            else if(!binding.editTextParola.text.toString().matches(".*[A-Z].*".toRegex())){
-                binding.textInputLayoutPassword.error="En Az 1 Büyük Karakter Zorunludur"
+           viewModel.passwordValidation(binding.editTextParola.text.toString())
 
-            }
-            else if(!binding.editTextParola.text.toString().matches(".*[a-z].*".toRegex())){
-                binding.textInputLayoutPassword.error="En Az 1 Küçük Karakter Zorunludur"
-            }
-            else if(!binding.editTextParola.text.toString().matches(".*[@#\$%^&+=].*".toRegex())){
-                binding.textInputLayoutPassword.error="En Az 1 Özel Karakter Kullanılmalıdır (@#\$%^&+=)"
-            }
-            else
-            {
-                binding.textInputLayoutPassword.error=null
-            }
         }
 
     }
 
     private fun phoneTextChangeListener(){
         binding.editTextPhoneNumber.addTextChangedListener {
-            if(binding.editTextPhoneNumber.text.toString()==""){
-                binding.textInputLayoutPhone.error="Lütfen Cep Numaranızı Giriniz"
-            }
-            else if(binding.editTextPhoneNumber.text.toString().length<10){
-                binding.textInputLayoutPhone.error="Lütfen Cep Telefonunuzu 10 Haneli Giriniz"
+            viewModel.phoneValidation(binding.editTextPhoneNumber.text.toString())
 
-            }
-
-
-            else
-            {
-                binding.textInputLayoutPhone.error=null
-            }
         }
 
 
 
     }
 
-    private fun validateMailPasswordPhone() : Boolean{
-        val mailIsTrue=binding.textInputLayoutEmail.error
-        val passwordIsTrue=binding.textInputLayoutPassword.error
-        val phoneIsTrue=binding.textInputLayoutPhone.error
-        if(mailIsTrue==null && passwordIsTrue==null && phoneIsTrue==null){
-            return true
-        }
-        return false
-
-
-    }
 
 
 
@@ -252,6 +196,90 @@ class RegisterActivity : AppCompatActivity() {
     }
     private fun hideProgressBar(){
         progressBar2.visibility=View.GONE
+    }
+
+
+    private fun observeLiveData(){
+        viewModel.mailMessage.observe(this@RegisterActivity, Observer { mailMessage->
+            binding.textInputLayoutEmail.helperText=mailMessage
+
+        })
+
+        viewModel.passwordMessage.observe(this@RegisterActivity, Observer { passwordMessage->
+            binding.textInputLayoutPassword.helperText=passwordMessage
+
+        })
+        viewModel.phoneMessage.observe(this@RegisterActivity, Observer { phoneMessage->
+            binding.textInputLayoutPhone.helperText=phoneMessage
+
+        })
+        viewModel.validateAll.observe(this@RegisterActivity, Observer { isValidated->
+            result=isValidated
+
+        })
+        viewModel.isDataInFirebase.observe(this@RegisterActivity, Observer { isIn->
+
+            if (isIn){
+                Toast.makeText(this,"Bu Telefon Numarasıyla Bir Kayıt Var",Toast.LENGTH_SHORT).show()
+                showAll()
+                hideProgressBar()
+
+            }
+            else
+            {
+
+
+
+
+                var callbacks=object : PhoneAuthProvider.OnVerificationStateChangedCallbacks(){
+                    override fun onVerificationCompleted(p0: PhoneAuthCredential) {
+                        Toast.makeText(this@RegisterActivity,"Doğrulama Başarılı",Toast.LENGTH_SHORT).show()
+                        progressBar2.visibility=View.GONE
+                        showAll()
+                        hideProgressBar()
+
+                    }
+
+                    override fun onVerificationFailed(p0: FirebaseException) {
+                        progressBar2.visibility=View.GONE
+                        Toast.makeText(this@RegisterActivity,"Giriş Başarısız, Hata:"+p0.localizedMessage,Toast.LENGTH_SHORT).show()
+                        println(p0.localizedMessage)
+                        showAll()
+                        hideProgressBar()
+                    }
+
+                    override fun onCodeSent(verificationId: String, token: PhoneAuthProvider.ForceResendingToken) {
+                        showAll()
+                        hideProgressBar()
+                        Toast.makeText(this@RegisterActivity,"Doğrulama Kodu Gönderildi",Toast.LENGTH_SHORT).show()
+                        storedVerificationId=verificationId
+                        resendToken=token
+                        val intent=Intent(this@RegisterActivity,PhoneAuthActivity::class.java)
+                        //gönderilecekler
+                        val phoneWithCountry=countryCodePicker.selectedCountryCodeWithPlus+phonNum
+
+
+                        intent.putExtra("phone",phoneWithCountry)
+                        intent.putExtra("email",email)
+                        intent.putExtra("password",password)
+                        intent.putExtra("storedVerificationId",storedVerificationId)
+                        intent.putExtra("token",resendToken)
+                        startActivity(intent)
+
+
+                    }
+
+                }
+
+
+
+                sendVerificationCode(phonNum,callbacks)
+            }
+
+
+        })
+
+
     }
 
 
